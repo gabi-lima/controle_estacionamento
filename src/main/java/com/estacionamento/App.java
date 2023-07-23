@@ -7,9 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
-import com.estacionamento.DAO.Conexao;
 
 /**
  * JavaFX App
@@ -23,13 +20,17 @@ public class App extends Application {
         scene = new Scene(loadFXML("loginpanel"), 1024, 768);
         stage.setScene(scene);
         stage.show();
-        ArrayList<Estacionamento> estlista = Conexao.listar();
-        for (Estacionamento esta : estlista) {
-            System.out.println("Nome: " + String.valueOf(esta.getNome()));
-            System.out.println("Carro: " + String.valueOf(esta.getCarro()));
-            System.out.println("Placa: " + String.valueOf(esta.getPlaca()));
-            System.out.println("Vaga: " + String.valueOf(esta.getVaga()));
-        }
+
+        /*
+         * listar DB
+         * ArrayList<Estacionamento> estlista = Mainlayout.listar();
+         * for (Estacionamento esta : estlista) {
+         * System.out.println("Nome: " + String.valueOf(esta.getNome()));
+         * System.out.println("Carro: " + String.valueOf(esta.getCarro()));
+         * System.out.println("Placa: " + String.valueOf(esta.getPlaca()));
+         * System.out.println("Vaga: " + String.valueOf(esta.getVaga()));
+         * }
+         */
     }
 
     static void setRoot(String fxml) throws IOException {

@@ -1,8 +1,6 @@
 package com.estacionamento;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javafx.event.ActionEvent;
@@ -15,6 +13,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import com.estacionamento.DAO.Conexao;
 
 public class loginlayout {
 
@@ -55,21 +55,20 @@ public class loginlayout {
         String nome_usuario = campoUsuario.getText();
         String senha_usuario = campoSenha.getText();
 
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:sqlite:D:\\java\\DB\\estacionamento.db")) {
-
-            PreparedStatement prepared_statement = connection
+        try {
+            Conexao connection = new Conexao();
+            PreparedStatement prepared_statement = connection.conectarBD()
                     .prepareStatement("select * from usuario where nome_usuario =? and senha_usuario = ?");
             prepared_statement.setString(1, nome_usuario);
             prepared_statement.setString(2, senha_usuario);
             ResultSet result_set = prepared_statement.executeQuery();
 
             if (result_set.next()) {
-                testeTeste.setText("ENTROU");
+
                 entrarApp();
 
             } else {
-                testeTeste.setText("N ENTROU");
+                testeTeste.setText("Cheque o nome de usuário e senha! ");
             }
             result_set.close();
             prepared_statement.close();
@@ -81,10 +80,6 @@ public class loginlayout {
         }
 
     }
-
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
 
     private void entrarApp() throws IOException {
 
