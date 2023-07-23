@@ -8,11 +8,14 @@ import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.MouseEvent;
 
 import com.estacionamento.DAO.Conexao;
 
@@ -36,6 +39,8 @@ public class Mainlayout implements Initializable {
     @FXML
     private TableColumn<Estacionamento, String> vaga;
 
+    @FXML
+
     ObservableList<Estacionamento> dados = FXCollections.observableArrayList();
 
     @Override
@@ -45,12 +50,18 @@ public class Mainlayout implements Initializable {
         placa.setCellValueFactory(new PropertyValueFactory<Estacionamento, String>("placa"));
         vaga.setCellValueFactory(new PropertyValueFactory<Estacionamento, String>("vaga"));
 
-        // Chamar o método listar() da classe Conexao para obter os dados do banco de
+        // Chamar o método listar() para obter os dados do banco de
         // dados
         ArrayList<Estacionamento> listaEstacionamentos = listar();
         dados.addAll(listaEstacionamentos);
 
         tabela_estaciona.setItems(dados);
+        // Tornando a tabela editável
+        tabela_estaciona.setEditable(true);
+        nome.setCellFactory(TextFieldTableCell.forTableColumn());
+        carro.setCellFactory(TextFieldTableCell.forTableColumn());
+        placa.setCellFactory(TextFieldTableCell.forTableColumn());
+        vaga.setCellFactory(TextFieldTableCell.forTableColumn());
 
     }
 
@@ -88,4 +99,64 @@ public class Mainlayout implements Initializable {
 
     }
 
+    @FXML
+    void linhaSelecionada(MouseEvent event) {
+
+    }
+
+    // Manipulador de eventos para editar células da tabela
+    @FXML
+    private void onEditCommitNome(TableColumn.CellEditEvent<Estacionamento, String> event) {
+        Estacionamento estacionamento = event.getRowValue();
+        estacionamento.setNome(event.getNewValue());
+        updateDatabase(estacionamento);
+    }
+
+    @FXML
+    private void onEditCommitCarro(TableColumn.CellEditEvent<Estacionamento, String> event) {
+        Estacionamento estacionamento = event.getRowValue();
+        estacionamento.setCarro(event.getNewValue());
+        updateDatabase(estacionamento);
+    }
+
+    @FXML
+    private void onEditCommitPlaca(TableColumn.CellEditEvent<Estacionamento, String> event) {
+        Estacionamento estacionamento = event.getRowValue();
+        estacionamento.setPlaca(event.getNewValue());
+        updateDatabase(estacionamento);
+    }
+
+    @FXML
+    private void onEditCommitVaga(TableColumn.CellEditEvent<Estacionamento, String> event) {
+        Estacionamento estacionamento = event.getRowValue();
+        estacionamento.setVaga(event.getNewValue());
+        updateDatabase(estacionamento);
+    }
+
+    // Atualiza a database após editar
+    private void updateDatabase(Estacionamento estacionamento) {
+        try {
+            Conexao connection = new Conexao();
+            PreparedStatement prepared_statement = connection.conectarBD()
+                    .prepareStatement(
+                            "UPDATE estacionamento SET nome = ?, carro = ?, placa = ?, vaga = ? WHERE placa = ?");
+            prepared_statement.setString(1, estacionamento.getNome());
+            prepared_statement.setString(2, estacionamento.getCarro());
+            prepared_statement.setString(3, estacionamento.getPlaca());
+            prepared_statement.setString(4, estacionamento.getVaga());
+            prepared_statement.setString(5, estacionamento.getPlaca()); // Use the placa to identify the record to
+                                                                        // update
+            prepared_statement.executeUpdate();
+
+            prepared_statement.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // Method to delete the Estacionamento object from the TableView and database
+    @FXML
+    private void deletarEstacionamento(ActionEvent event) {
+
+    }
 }

@@ -32,10 +32,10 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -45,54 +45,27 @@
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
-        <Menu mnemonicParsing="false" text="File">
-          <items>
-            <MenuItem mnemonicParsing="false" text="New" />
-            <MenuItem mnemonicParsing="false" text="Open…" />
-            <Menu mnemonicParsing="false" text="Open Recent" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Close" />
-            <MenuItem mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
-          </items>
-        </Menu>
         <Menu mnemonicParsing="false" text="Edit">
           <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-          <items>
-            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+            <MenuItem mnemonicParsing="false" text="Adicionar" />
+            <MenuItem mnemonicParsing="false" text="Editar" />
+            <MenuItem mnemonicParsing="false" text="Apagar" />
           </items>
         </Menu>
       </menus>
     </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
-            <TableView fx:id="tabela_estaciona" prefHeight="743.0" prefWidth="697.0">
+            <TableView fx:id="tabela_estaciona" editable="true" onMouseClicked="#linhaSelecionada" prefHeight="743.0" prefWidth="684.0">
               <columns>
-                <TableColumn fx:id="nome" prefWidth="200.0" text="Nome" />
-                <TableColumn fx:id="carro" prefWidth="100.0" text="Carro" />
-                  <TableColumn fx:id="placa" prefWidth="100.0" text="Placa" />
-                  <TableColumn fx:id="vaga" prefWidth="100.0" text="Vaga" />
+                <TableColumn fx:id="nome" onEditCommit="#onEditCommitNome" prefWidth="200.0" text="Nome" />
+                <TableColumn fx:id="carro" onEditCommit="#onEditCommitCarro" prefWidth="100.0" text="Carro" />
+                  <TableColumn fx:id="placa" onEditCommit="#onEditCommitPlaca" prefWidth="100.0" text="Placa" />
+                  <TableColumn fx:id="vaga" onEditCommit="#onEditCommitVaga" prefWidth="100.0" text="Vaga" />
                   <TableColumn fx:id="tempo_vaga" prefWidth="200.0" text="Tempo na vaga" />
               </columns>
             </TableView>
+            <Button layoutX="827.0" layoutY="101.0" mnemonicParsing="false" onAction="#deletarEstacionamento" text="Button" />
          </children>
     </AnchorPane>
   </children>
