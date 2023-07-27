@@ -33,11 +33,14 @@
 -->
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -65,7 +68,15 @@
                   <TableColumn fx:id="tempo_vaga" prefWidth="200.0" text="Tempo na vaga" />
               </columns>
             </TableView>
-            <Button layoutX="827.0" layoutY="101.0" mnemonicParsing="false" onAction="#deletarEstacionamento" text="Button" />
+            <Button fx:id="botaoAdd" layoutX="823.0" layoutY="347.0" mnemonicParsing="false" onAction="#deletarEstacionamento" onMouseClicked="#adicionar" text="Adicionar" />
+            <Label layoutX="840.0" layoutY="14.0" text="Nome" />
+            <TextField fx:id="inputNome" layoutX="782.0" layoutY="40.0" />
+            <Label layoutX="840.0" layoutY="76.0" text="Carro" />
+            <TextField fx:id="inputCarro" layoutX="782.0" layoutY="112.0" />
+            <Label layoutX="840.0" layoutY="148.0" text="Placa" />
+            <TextField fx:id="inputplaca" layoutX="782.0" layoutY="184.0" />
+            <Label layoutX="840.0" layoutY="220.0" text="Vaga" />
+            <ChoiceBox fx:id="vagaLivre" layoutX="779.0" layoutY="256.0" prefWidth="150.0" />
          </children>
     </AnchorPane>
   </children>

@@ -5,12 +5,22 @@ public class Estacionamento {
     private String carro;
     private String placa;
     private String vaga;
+    private String dataHoraAtual;
 
-    public Estacionamento(String nome, String carro, String placa, String vaga) {
+    public Estacionamento(String nome, String carro, String placa, String vaga, String dataHoraAtual) {
         this.nome = nome;
         this.carro = carro;
         this.placa = placa;
         this.vaga = vaga;
+        this.dataHoraAtual = dataHoraAtual;
+    }
+
+    public String getDataHoraAtual() {
+        return dataHoraAtual;
+    }
+
+    public void setDataHoraAtual(String dataHoraAtual) {
+        this.dataHoraAtual = dataHoraAtual;
     }
 
     public String getNome() {
