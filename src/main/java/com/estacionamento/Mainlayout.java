@@ -3,6 +3,7 @@ package com.estacionamento;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -11,8 +12,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
@@ -20,6 +24,23 @@ import javafx.scene.input.MouseEvent;
 import com.estacionamento.DAO.Conexao;
 
 public class Mainlayout implements Initializable {
+    @FXML
+    private Button botaoAdd;
+
+    @FXML
+    private TextField inputCarro;
+
+    @FXML
+    private TextField inputNome;
+
+    @FXML
+    private TextField inputplaca;
+
+    @FXML
+    private ChoiceBox<String> vagaLivre;
+
+    private String[] vagas = { "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10", "B1", "B2", "B3", "B4",
+            "B5", "B6", "B7", "B8", "B9", "B10" };
 
     @FXML
     private TableColumn<Estacionamento, String> carro;
@@ -45,6 +66,7 @@ public class Mainlayout implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
+        vagaLivre.getItems().addAll(vagas);
         nome.setCellValueFactory(new PropertyValueFactory<Estacionamento, String>("nome"));
         carro.setCellValueFactory(new PropertyValueFactory<Estacionamento, String>("carro"));
         placa.setCellValueFactory(new PropertyValueFactory<Estacionamento, String>("placa"));
@@ -65,10 +87,66 @@ public class Mainlayout implements Initializable {
 
     }
 
-    /*
-     * (Connection connection = DriverManager
-     * .getConnection("jdbc:sqlite:D:\\java\\DB\\estacionamento.db"))
-     */
+    private boolean vagaDisponivel(String vaga) {
+        for (Estacionamento estacionamento : dados) {
+            if (estacionamento.getVaga().equals(vaga)) {
+                return false; // Vaga já ocupada
+            }
+        }
+        return true; // Vaga disponível
+    }
+
+    public void adicionar() {
+        String nome = inputNome.getText();
+        String carro = inputCarro.getText();
+        String placa = inputplaca.getText();
+        String vaga = vagaLivre.getValue();
+
+        // Verifica se todos os campos estão preenchidos
+        if (nome.isEmpty() || carro.isEmpty() || placa.isEmpty() || vaga == null) {
+            System.out.println("Por favor, preencha todos os campos antes de adicionar.");
+            return;
+        }
+
+        // Verifica se a vaga selecionada está disponível
+        if (!vagaDisponivel(vaga)) {
+            System.out.println("A vaga selecionada (" + vaga + ") não está disponível.");
+            return;
+        }
+
+        try {
+            Conexao connection = new Conexao();
+            PreparedStatement prepared_statement = connection.conectarBD()
+                    .prepareStatement(
+                            "INSERT INTO estacionamento (nome, carro, placa, vaga, data_entrada) VALUES (?, ?, ?, ?, ?)");
+            prepared_statement.setString(1, nome);
+            prepared_statement.setString(2, carro);
+            prepared_statement.setString(3, placa);
+            prepared_statement.setString(4, vaga);
+
+            // Obter a data e hora atual
+            LocalDateTime dataHoraAtual = LocalDateTime.now();
+            prepared_statement.setString(5, dataHoraAtual.toString());
+
+            prepared_statement.executeUpdate();
+
+            prepared_statement.close();
+
+            // Atualiza a tabela após a inserção no banco de dados
+            Estacionamento novoEstacionamento = new Estacionamento(nome, carro, placa, vaga, dataHoraAtual.toString());
+            dados.add(novoEstacionamento);
+
+            // Limpa os campos de entrada após a adição
+            inputNome.clear();
+            inputCarro.clear();
+            inputplaca.clear();
+            vagaLivre.getSelectionModel().clearSelection();
+        } catch (Exception e) {
+            System.out.println("Erro ao adicionar no banco de dados: " + e.getMessage());
+        }
+
+    }
+
     public static ArrayList<Estacionamento> listar() {
         try {
             Conexao connection = new Conexao();
@@ -82,7 +160,7 @@ public class Mainlayout implements Initializable {
                         result_set.getString("nome"),
                         result_set.getString("carro"),
                         result_set.getString("placa"),
-                        result_set.getString("vaga"));
+                        result_set.getString("vaga"), null);
 
                 response.add(estacionamento);
             }
@@ -144,8 +222,7 @@ public class Mainlayout implements Initializable {
             prepared_statement.setString(2, estacionamento.getCarro());
             prepared_statement.setString(3, estacionamento.getPlaca());
             prepared_statement.setString(4, estacionamento.getVaga());
-            prepared_statement.setString(5, estacionamento.getPlaca()); // Use the placa to identify the record to
-                                                                        // update
+            prepared_statement.setString(5, estacionamento.getPlaca()); // Usa placa para identificar no BD
             prepared_statement.executeUpdate();
 
             prepared_statement.close();
