@@ -8,7 +8,7 @@ public class Conexao {
     public Connection conectarBD() {
         Connection conn = null;
         try {
-            String url = "jdbc:sqlite:D:\\java\\DB\\estacionamento.db";
+            String url = "jdbc:sqlite:estacionamento.db";
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
             System.out.println("erro de conexão:" + e.getMessage());

@@ -4,8 +4,11 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import com.estacionamento.DAO.Conexao;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,8 +23,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
-
-import com.estacionamento.DAO.Conexao;
 
 public class Mainlayout implements Initializable {
     @FXML
@@ -55,7 +56,7 @@ public class Mainlayout implements Initializable {
     private TableView<Estacionamento> tabela_estaciona;
 
     @FXML
-    private TableColumn<?, ?> tempo_vaga;
+    private TableColumn<Estacionamento, String> tempo_vaga;
 
     @FXML
     private TableColumn<Estacionamento, String> vaga;
@@ -66,14 +67,17 @@ public class Mainlayout implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
+
+        // Adiciona as vagas ao ChoiceBox
         vagaLivre.getItems().addAll(vagas);
+        // Adiciona os valores ao tableview
         nome.setCellValueFactory(new PropertyValueFactory<Estacionamento, String>("nome"));
         carro.setCellValueFactory(new PropertyValueFactory<Estacionamento, String>("carro"));
         placa.setCellValueFactory(new PropertyValueFactory<Estacionamento, String>("placa"));
         vaga.setCellValueFactory(new PropertyValueFactory<Estacionamento, String>("vaga"));
+        tempo_vaga.setCellValueFactory(new PropertyValueFactory<Estacionamento, String>("tempo_vaga"));
 
-        // Chamar o método listar() para obter os dados do banco de
-        // dados
+        // Chamar o método listar() para obter os dados do banco de dados
         ArrayList<Estacionamento> listaEstacionamentos = listar();
         dados.addAll(listaEstacionamentos);
 
@@ -118,15 +122,20 @@ public class Mainlayout implements Initializable {
             Conexao connection = new Conexao();
             PreparedStatement prepared_statement = connection.conectarBD()
                     .prepareStatement(
-                            "INSERT INTO estacionamento (nome, carro, placa, vaga, data_entrada) VALUES (?, ?, ?, ?, ?)");
+                            "INSERT INTO estacionamento (nome, carro, placa, vaga, data_entrada, ocupado) VALUES (?, ?, ?, ?, ?)");
             prepared_statement.setString(1, nome);
             prepared_statement.setString(2, carro);
             prepared_statement.setString(3, placa);
             prepared_statement.setString(4, vaga);
 
             // Obter a data e hora atual
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime dataHoraAtual = LocalDateTime.now();
-            prepared_statement.setString(5, dataHoraAtual.toString());
+            String horaformatada = dataHoraAtual.format(formatter);
+
+            prepared_statement.setString(5, horaformatada);
+            int ocupado = 1;
+            prepared_statement.setInt(6, ocupado);
 
             prepared_statement.executeUpdate();
 
@@ -143,6 +152,7 @@ public class Mainlayout implements Initializable {
             vagaLivre.getSelectionModel().clearSelection();
         } catch (Exception e) {
             System.out.println("Erro ao adicionar no banco de dados: " + e.getMessage());
+
         }
 
     }
@@ -160,7 +170,8 @@ public class Mainlayout implements Initializable {
                         result_set.getString("nome"),
                         result_set.getString("carro"),
                         result_set.getString("placa"),
-                        result_set.getString("vaga"), null);
+                        result_set.getString("vaga"),
+                        result_set.getString("data_entrada"));
 
                 response.add(estacionamento);
             }
