@@ -1,26 +1,29 @@
 package com.estacionamento;
 
+import javafx.scene.control.TableColumn;
+
 public class Estacionamento {
     private String nome;
     private String carro;
     private String placa;
     private String vaga;
     private String dataHoraAtual;
+    private String tempo_vaga;
 
-    public Estacionamento(String nome, String carro, String placa, String vaga, String dataHoraAtual) {
+    public Estacionamento(String nome, String carro, String placa, String vaga, String tempo_vaga) {
         this.nome = nome;
         this.carro = carro;
         this.placa = placa;
         this.vaga = vaga;
-        this.dataHoraAtual = dataHoraAtual;
+        this.tempo_vaga = tempo_vaga;
     }
 
-    public String getDataHoraAtual() {
-        return dataHoraAtual;
+    public String getTempo_vaga() {
+        return tempo_vaga;
     }
 
-    public void setDataHoraAtual(String dataHoraAtual) {
-        this.dataHoraAtual = dataHoraAtual;
+    public void setTempo_vaga(String tempo_vaga) {
+        this.tempo_vaga = tempo_vaga;
     }
 
     public String getNome() {
